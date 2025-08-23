@@ -1,5 +1,5 @@
 USE ROLE accountadmin;
-
+/*
 CREATE OR REPLACE WAREHOUSE tasty_bytes_dbt_wh
     WAREHOUSE_SIZE = 'small'
     WAREHOUSE_TYPE = 'standard'
@@ -9,7 +9,7 @@ CREATE OR REPLACE WAREHOUSE tasty_bytes_dbt_wh
     COMMENT = 'warehouse for tasty bytes dbt demo';
 
 USE WAREHOUSE tasty_bytes_dbt_wh;
-
+*/
 CREATE DATABASE IF NOT EXISTS tasty_bytes_dbt_db;
 CREATE OR REPLACE SCHEMA tasty_bytes_dbt_db.raw;
 CREATE OR REPLACE SCHEMA tasty_bytes_dbt_db.dev;
@@ -24,11 +24,16 @@ ALTER SCHEMA tasty_bytes_dbt_db.prod SET LOG_LEVEL = 'INFO';
 ALTER SCHEMA tasty_bytes_dbt_db.prod SET TRACE_LEVEL = 'ALWAYS';
 ALTER SCHEMA tasty_bytes_dbt_db.prod SET METRIC_LEVEL = 'ALL';
 
-CREATE OR REPLACE API INTEGRATION git_integration
+CREATE OR REPLACE API INTEGRATION tb_dbt_git_api_integration
   API_PROVIDER = git_https_api
-  API_ALLOWED_PREFIXES = ('https://github.com/')
+  API_ALLOWED_PREFIXES = ('https://github.com/ejwchow')
   ENABLED = TRUE;
 
+CREATE OR REPLACE EXTERNAL ACCESS INTEGRATION dbt_ext_access
+  ALLOWED_NETWORK_RULES = (dbt_network_rule)
+  ENABLED = TRUE;
+
+/*
 CREATE OR REPLACE NETWORK RULE tasty_bytes_dbt_db.public.dbt_network_rule
   MODE = EGRESS
   TYPE = HOST_PORT
@@ -37,7 +42,7 @@ CREATE OR REPLACE NETWORK RULE tasty_bytes_dbt_db.public.dbt_network_rule
 CREATE OR REPLACE EXTERNAL ACCESS INTEGRATION dbt_access_integration
   ALLOWED_NETWORK_RULES = (tasty_bytes_dbt_db.public.dbt_network_rule)
   ENABLED = true;
-
+*/
 CREATE OR REPLACE FILE FORMAT tasty_bytes_dbt_db.public.csv_ff 
 type = 'csv';
 
